@@ -1,0 +1,404 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0", 
+      "title": " Deel Backend Task",
+      "description": "This is a task for deel by Alexander",
+      "license": {
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+      }
+    },
+    "host": "localhost:3001",
+    "basePath": "/",
+    "tags": [
+      {
+        "name": "Profiles",
+        "description": "API for Profiles, contracts and Jobs"
+      }
+    ],
+    "schemes": ["http"],
+    "consumes": ["application/json"],
+    "produces": ["application/json"],
+    "definitions": {
+        "Contract": {
+            "type": "Object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "terms": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "ContractorId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "ClientId": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "Job": {
+            "type" : "Object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "decimal"
+                },
+                "paid": {
+                    "type": "boolean"
+                },
+                "paymentDate": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "ContractorId": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "Profile":{
+            "type": "Object",
+            "properties": {
+                "id":{
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "profession": {
+                    "type": "string"
+                },
+                "balance": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "Client":{
+            "type":"Object",
+            "properties":{
+                "id":{
+                    "type":"integer",
+                    "format":"int64"
+                },
+                "firstName":{
+                    "type":"string"
+                },
+                "lastName":{
+                    "type":"string"
+                },
+                "totalPaid":{
+                    "type":"decimal",
+                    "format":"double"
+                }
+            }
+        }
+    },
+    "paths": {
+        "/contracts/{contractId}":{
+            "get":{
+                "tags":["Contract"],
+                "summary": "Find a contract by ID of an authorized profile",
+                "description": "returns a contract of a profile by id ",
+                "produces":["application/json"],
+                "parameters":[
+                    {
+                        "name":"profile_id",
+                        "in": "header",
+                        "description": "ID of a profile",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name":"contractId",
+                        "in": "path",
+                        "description": "ID of a contract to return",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses":{
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/Contract"
+                        }
+                    },
+                    "404": {
+                        "description": "Contract not found"
+                    },
+                    "401": {
+                        "description": "Non authorized"
+                    }
+                }
+            }
+        },
+        "/contracts/": {
+            "get":{
+                "tags":["Contract"],
+                "summary": "Find contracts of an authorized profile",
+                "description": "returns contracts of a profile by id ",
+                "produces":["application/json"],
+                "parameters":[
+                    {
+                        "name":"profile_id",
+                        "in": "header",
+                        "description": "ID of a profile",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses":{
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/Contract"
+                        }
+                    },
+                    "404": {
+                        "description": "Contracts not found"
+                    },
+                    "401": {
+                        "description": "Non authorized"
+                    }
+                }
+            }
+        },
+        "/jobs/unpaid/": {
+            "get":{
+                "tags":["Jobs"],
+                "summary": "Find unpaid jobs of active contracts",
+                "description": "returns Jobs",
+                "produces":["application/json"],
+                "parameters":[
+                    {
+                        "name":"profile_id",
+                        "in": "header",
+                        "description": "ID of a profile",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses":{
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/Contract"
+                        }
+                    },
+                    "404": {
+                        "description": "Contracts not found"
+                    },
+                    "401": {
+                        "description": "Non authorized"
+                    }
+                }
+            }
+        },
+        "/jobs/{jobId}/pay/":{
+            "post":{
+                "tags":["Jobs"],
+                "summary": "Paid a job",
+                "description": "Paid a Job of a Client's contract ",
+                "produces":["application/json"],
+                "parameters": [
+                    {
+                        "name":"profile_id",
+                        "in": "header",
+                        "description": "ID of a profile",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name":"jobId",
+                        "in": "path",
+                        "description": "ID of a job",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+
+                ],
+                "responses":{
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/Job"
+                        }
+                    },
+                    "404": {
+                        "description": "Process error."
+                    },
+                    "401": {
+                        "description": "Non authorized"
+                    }
+                }
+
+            }
+        },
+        "/balances/deposit/{userId}/":{
+            "post": {
+                "tags":["Deposit"],
+                "summary": "Deposits money ",
+                "description": "Deposits money into the the the balance of a client",
+                "produces":["application/json"],
+                "parameters": [
+                    {
+                        "name":"deposit",
+                        "in": "body",
+                        "description": "money to deposit",
+                        "required": true,
+                        "type": "number",
+                        "format": "double"
+                    },
+                    {
+                        "name":"userId",
+                        "in": "path",
+                        "description": "ID of a client",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses":{
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/Profile"
+                        }
+                    },
+                    "404": {
+                        "description": "Process error"
+                    },
+                    "401": {
+                        "description": "Non authorized"
+                    }
+                }
+            }
+        },
+        "/admin/best-profession":{
+            "get":{
+                "tags":["Admin"],
+                "summary": "Find best paid profession",
+                "description": "returns best paid profession in a specific range of dates ",
+                "produces":["application/json"],
+                "parameters":[
+                    {
+                        "name":"start",
+                        "in": "query",
+                        "description": "Start date",
+                        "required": true,
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "name":"end",
+                        "in": "query",
+                        "description": "End date",
+                        "required": true,
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                ],
+                "responses":{
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Profession not found"
+                    }
+                }
+            }
+        },
+        "/admin/best-clients":{
+            "get":{
+                "tags":["Admin"],
+                "summary": "Returns the clients the paid the most",
+                "description": "Returns the clients the paid the most for jobs in the query time period. ",
+                "produces":["application/json"],
+                "parameters":[
+                    {
+                        "name":"start",
+                        "in": "query",
+                        "description": "Start date",
+                        "required": true,
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "name":"end",
+                        "in": "query",
+                        "description": "End date",
+                        "required": true,
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "name":"limit",
+                        "in": "query",
+                        "description": "limit of rows",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses":{
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/Client"
+                        }
+                    },
+                    "404": {
+                        "description": "Profession not found"
+                    }
+                }
+            }
+        }
+    }
+}
